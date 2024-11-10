@@ -37,4 +37,4 @@ class BM25S_Retriever:
         :return: The retrieved documents.
         """
         query_tokens = bm25s.tokenize(query, stemmer=self.document_store.stemmer)
-        return self.document_store.bm25s.retrieve(query_tokens, self.top_k)
+        return self.document_store.bm25s.retrieve(query_tokens, k=self.top_k)
