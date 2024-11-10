@@ -4,16 +4,17 @@
 from typing import Any, Dict, Optional
 
 from haystack import component
-from haystack_integrations.document_stores.example_store import ExampleDocumentStore
+from haystack_integrations.document_stores.bm25s import BM25S_DocumentStore
+import bm25s
 
 
 @component
-class ExampleRetriever:
+class BM25S_Retriever:
     """
     A component for retrieving documents from an ExampleDocumentStore.
     """
 
-    def __init__(self, document_store: ExampleDocumentStore, filters: Optional[Dict[str, Any]] = None, top_k: int = 10):
+    def __init__(self, document_store: BM25S_DocumentStore, top_k: int = 10):
         """
         Create an ExampleRetriever component. Usually you pass some basic configuration
         parameters to the constructor.
@@ -24,15 +25,16 @@ class ExampleRetriever:
 
         :raises ValueError: If the specified top_k is not > 0.
         """
-        self.filters = filters
-        self.top_k = top_k
         self.document_store = document_store
+        self.top_k = top_k
+        
 
-    def run(self, _):
+    def run(self, query: str):
         """
         Run the Retriever on the given input data.
 
         :param data: The input data for the retriever. In this case, a list of queries.
         :return: The retrieved documents.
         """
-        return []  # FIXME
+        query_tokens = bm25s.tokenize(query, stemmer=self.document_store.stemmer)
+        return self.document_store.bm25s.retrieve(query_tokens, self.top_k)
