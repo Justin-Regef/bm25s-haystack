@@ -38,4 +38,6 @@ class BM25S_Retriever:
         """
         query_tokens = bm25s.tokenize(query, stemmer=self.document_store.stemmer)
         bm25s_retrieved_docs = self.document_store.bm25s.retrieve(query_tokens, k=self.top_k, return_as='documents')
-        return [Document(content=doc['text']) for doc in bm25s_retrieved_docs[0]]
+        if self.document_store.load_corpus:
+            return [Document(content=doc['text']) for doc in bm25s_retrieved_docs[0]]
+        return [Document(id=doc) for doc in bm25s_retrieved_docs[0]]
