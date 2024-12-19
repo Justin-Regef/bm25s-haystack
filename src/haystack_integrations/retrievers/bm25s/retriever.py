@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 from typing import Any, Dict, Optional
 
-from haystack import component
+from haystack import component, Document
 from haystack_integrations.document_stores.bm25s import BM25S_DocumentStore
 import bm25s
 
@@ -37,4 +37,5 @@ class BM25S_Retriever:
         :return: The retrieved documents.
         """
         query_tokens = bm25s.tokenize(query, stemmer=self.document_store.stemmer)
-        return self.document_store.bm25s.retrieve(query_tokens, k=self.top_k)
+        bm25s_retrieved_docs = self.document_store.bm25s.retrieve(query_tokens, k=self.top_k, return_as='Documents')
+        return [Document(content=doc['text']) for doc in bm25s_retrieved_docs[0]]
