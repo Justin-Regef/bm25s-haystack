@@ -40,4 +40,4 @@ class BM25S_Retriever:
         bm25s_retrieved_docs = self.document_store.bm25s.retrieve(query_tokens, k=self.top_k, return_as='documents')
         if self.document_store.load_corpus:
             return [Document(content=doc['text']) for doc in bm25s_retrieved_docs[0]]
-        return [Document(id=doc) for doc in bm25s_retrieved_docs[0]]
+        return [Document(content=str(doc)) for doc in bm25s_retrieved_docs[0]]
