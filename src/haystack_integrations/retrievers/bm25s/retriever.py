@@ -37,6 +37,8 @@ class BM25S_Retriever:
         :return: The retrieved documents.
         """
         query_tokens = bm25s.tokenize(query, stemmer=self.document_store.stemmer)
+        # TODO: return both the id and the doc (if load corpus) and instatiate the Document object with the
+        # id in the right place (and doc in the content if there is a doc)
         bm25s_retrieved_docs = self.document_store.bm25s.retrieve(query_tokens, k=self.top_k, return_as='documents')
         if self.document_store.load_corpus:
             return [Document(content=doc['text']) for doc in bm25s_retrieved_docs[0]]
